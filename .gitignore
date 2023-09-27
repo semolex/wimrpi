@@ -19,3 +19,14 @@
 
 # Go workspace file
 go.work
+
+# System-specific files
+.DS_Store
+.idea/
+build/bin/*
+.vscode/
+frontend/.vscode/
+frontend/.build/
+frontend/dist/assets/*.js
+frontend/dist/assets/*.css
+frontend/node_modules/
