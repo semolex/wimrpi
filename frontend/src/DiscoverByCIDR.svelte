@@ -15,14 +15,21 @@
     } from "carbon-components-svelte";
     import ArrowRight from "carbon-icons-svelte/lib/ArrowRight.svelte";
     import IPAddressRow from "./IPAddressRow.svelte";
-    import {PingIPsByCIDR} from "../wailsjs/go/main/App";
+    import {AutoDetect, PingIPsByCIDR} from "../wailsjs/go/main/App";
+    import {onMount} from "svelte";
 
     let loading: boolean = false;
     let inputCIDR: string | number = undefined;
     let discoveredIPs: { ip: string; id: string; port: number; lastPortStatus: boolean }[] = [];
 
-    export let CIDR: string;
+    function isValidCIDR(cidr: string): boolean {
+        const pattern = new RegExp(
+            '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])' +
+            '\\/(\\d|[1-2]\\d|3[0-2])$'
+        );
 
+        return pattern.test(cidr);
+    }
 
     function pingByCIDR(cidr: string | number): void {
         loading = true;
@@ -38,19 +45,33 @@
             loading = false;
         })
     }
+
+    function getOwnCIDR(): void {
+        AutoDetect().then(result => inputCIDR = result)
+    }
+
+    onMount(async () => {
+        getOwnCIDR();
+    });
 </script>
 
 <Row>
     <Column>
         <Row>
             <Tile>
-                <TextInput type="text" value={CIDR} on:input={(event) => {inputCIDR = event.detail}}/>
+                <TextInput
+                    type="text" bind:value={inputCIDR}
+                    invalid={inputCIDR && !isValidCIDR(inputCIDR.toString())}
+                    invalidText="Invalid CIDR"
+                />
             </Tile>
             <Tile>
                 <Button kind="secondary" size="small" on:click={() => {pingByCIDR(inputCIDR)}}
                         icon={ArrowRight}
+                        disabled={!inputCIDR || !isValidCIDR(inputCIDR.toString())}
                         iconDescription="Ping">
                 </Button>
+
             </Tile>
         </Row>
     </Column>
@@ -58,7 +79,6 @@
         <Tile>
             {#if loading}
                 <ProgressBar helperText="Pinging..."/>
-            {:else}
             {/if}
             <StructuredList condensed>
                 <StructuredListHead>
@@ -77,7 +97,6 @@
             </StructuredList>
             {#if loading}
                 <StructuredListSkeleton rows={5}/>
-            {:else}
             {/if}
         </Tile>
     </Column>
