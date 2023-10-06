@@ -19,8 +19,8 @@
 
 <StructuredListRow>
     <StructuredListCell>{ipData.ip}</StructuredListCell>
-    <StructuredListCell>
-        <TextInput type="number" size="sm" inline hideLabel on:input={
+    <StructuredListCell style="width: 20%">
+        <TextInput style="width: 45%" type="number" size="sm" hideLabel on:input={
             (event) => { ipData.port = +event.detail; }}/>
     </StructuredListCell>
     <StructuredListCell>

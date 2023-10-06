@@ -57,25 +57,26 @@
 
 <Row>
     <Column>
-        <Row>
-            <Tile>
-                <TextInput
-                    type="text" bind:value={inputCIDR}
-                    invalid={inputCIDR && !isValidCIDR(inputCIDR.toString())}
-                    invalidText="Invalid CIDR"
-                />
-            </Tile>
-            <Tile>
-                <Button kind="secondary" size="small" on:click={() => {pingByCIDR(inputCIDR)}}
-                        icon={ArrowRight}
-                        disabled={!inputCIDR || !isValidCIDR(inputCIDR.toString())}
-                        iconDescription="Ping">
-                </Button>
-
-            </Tile>
+        <Row style="margin-left: 0rem;">
+            <Column>
+                <Row>
+                    <TextInput
+                            type="text" bind:value={inputCIDR}
+                            invalid={inputCIDR && !isValidCIDR(inputCIDR.toString())}
+                            invalidText="Invalid CIDR"
+                    />
+                    <Button kind="secondary" size="small" on:click={() => {pingByCIDR(inputCIDR)}}
+                            icon={ArrowRight}
+                            disabled={!inputCIDR || !isValidCIDR(inputCIDR.toString())}
+                            iconDescription="Ping">
+                    </Button>
+                </Row>
+            </Column>
+            <Column>
+                <Row>
+                </Row>
+            </Column>
         </Row>
-    </Column>
-    <Column>
         <Tile>
             {#if loading}
                 <ProgressBar helperText="Pinging..."/>
